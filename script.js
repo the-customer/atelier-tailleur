@@ -10,8 +10,8 @@ const DB = {
 //
 const inputArticle = document.querySelector('#article');
 const infoArticle = document.querySelector('#infoArticle');
+// const confirmation = document.querySelector('#confirmation');
 // const inputArticle = document.getElementById('article');
-
 
 
   //events
@@ -21,6 +21,7 @@ const infoArticle = document.querySelector('#infoArticle');
         infoArticle.innerHTML = '';
         return;
     }
+
     //rechercher l'articles
     articleFound = findArticleByLibelle(av);
     articleFound = articleFound.length == 0 ? null : articleFound[0];
@@ -42,12 +43,67 @@ const infoArticle = document.querySelector('#infoArticle');
         html = `<h4>${article.libelle + ' | ' + article.prix }</h4>`;
         html += `<img width='100px' src='${article.img}'/>`;
     }else{
-        html = `<h4> Article introuvable!</h4> <h6>Voulez-vous l'ajouter?</h6>`;
-        html += `
-            <button type='button' class='btn btn-outline-success me-2'>Oui</button> | 
-            <button type='button' class='btn btn-outline-danger ms-2'>Non</button>
-        `
+        html = confirmation();
     }
     
     infoArticle.innerHTML = html;
+  }
+
+  function confirmation(){
+    return `<div class="row border text-center" id="confirmation">
+        <h4>Article introuvble!</h4>
+        <h6>Voulez-vous l'ajouter?</h6>
+        <p>
+            <button onclick="printForm()" type="button" class="btn btn-outline-success me-3">oui</button>|
+            <button onclick="annuler()" type="button" class="btn btn-outline-danger ms-2">non</button>
+        </p>
+    </div>`;
+  }
+
+  function formAdd(){
+    return `<div class="row border text-center p-4">
+    <h4>Nouvel Aricle :</h4>
+    <div class="form-group">
+        <label for="prix">Prix</label>
+        <input id="prix" type="number" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="qte">Quantité</label>
+        <input id="qte" type="number" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="img">Image</label>
+        <input id="img" type="text" class="form-control">
+    </div>
+    <div class="form-group">
+        <button onclick="saveArticle()" type="button" class="btn btn-sm btn-primary mt-2">Enregistrer</button> | 
+        <button type="button" onclick="annuler()" class="btn btn-sm btn-danger mt-2">Annuler</button>
+    </div>
+</div>`;
+  }
+
+  function annuler(){
+    inputArticle.value = '';
+    infoArticle.innerHTML = '';
+  }
+
+  function printForm(){
+    infoArticle.innerHTML = formAdd();
+  }
+
+  function saveArticle(){
+    const prix = document.querySelector('#prix').value;
+    const qte = document.querySelector('#qte').value;
+    const img = document.querySelector('#img').value;
+    const libelle = article.value;
+    const id = DB.av.length + 1;
+    //enregistrer dans la base
+    DB.av.push({
+        id, 
+        libelle, 
+        prix, 
+        qte,
+        img,
+    });
+    annuler();
   }
